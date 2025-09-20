@@ -61,13 +61,13 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'sturdy'   # Nombre de tu App Service
+          app-name: 'Alpha'   # Nombre de tu App Service
           slot-name: 'Production'
           package: '*.jar'
-          scm-do-build-during-deployment: true
 
       - name: Check deployed app health
         run: |
           echo "Verificando despliegue..."
-          curl -I https://sturdy-h3b6f4fyc5fbeuae.westeurope-01.azurewebsites.net || exit 1
+          curl -I https://alpha-h5hab9fahbhse5dc.eastus-01.azurewebsites.net || exit 1
           
+
