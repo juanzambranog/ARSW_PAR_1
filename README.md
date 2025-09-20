@@ -65,81 +65,25 @@ Y **mvn spring-boot:run**
     
     ![alt text](/src/main/resources/images/image-15.png)
 
+- Hacemos el .github\ workflows y esperamos a que haga build y deploy
+
+    ![alt text](/src/main/resources/images/image-16.png)
+
+- Hacemos una prueba momentanea con un controller test, para verificar que se desplego correctamente
+
+    ![alt text](/src/main/resources/images/image-17.png)   
+
+- Configuramos la API externa con la API Key otorgada
+    ![alt text](image.png)
+
+- Realizamos pruebas de consulta en web y en Postman y obtenemos resultados 
+    ![alt text](image-1.png)
 
 
+    ![alt text](image-2.png)
 
+    - Clase API externa
 
+    ![alt text](image-3.png)
 
-
-
-
-
-
-
-
-
-
-
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy JAR app to Azure Web App - Alpha
-
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read #This is required for actions/checkout
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Java version
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'microsoft'
-
-      - name: Build with Maven
-        run: mvn clean install
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
-  
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: java-app
-      
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_1821BD95A2EA4DB38F521065A494B1C1 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_020101F98F3C40B88EF2B5994BE42544 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_AC9060AE6B504A75946B48BB45196FD3 }}
-
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'Alpha'
-          slot-name: 'Production'
-          package: '*.jar'
 

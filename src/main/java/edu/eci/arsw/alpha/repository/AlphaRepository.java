@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AlphaRepository extends JpaRepository<Alpha, Long> {
+
+    // Custom query methods can be added here if needed
+    // For example: List<Alpha> findByNameContainingIgnoreCase(String name);
 }
