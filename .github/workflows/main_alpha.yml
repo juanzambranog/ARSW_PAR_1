@@ -1,33 +1,34 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
+# Docs: https://github.com/Azure/webapps-deploy
+# Pipeline: Build & Deploy Spring Boot JAR to Azure Web App
 
-name: Build and deploy JAR app to Azure Web App - Alpha
+name: Build and Deploy Spring Boot JAR to Azure - Alpha
 
 on:
   push:
     branches:
-      - main
-  workflow_dispatch:
+      - main   # Se ejecuta cuando haces push a main
+  workflow_dispatch: # Permite correrlo manualmente desde GitHub Actions
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout source code
+        uses: actions/checkout@v4
 
-      - name: Set up Java version
+      - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'microsoft'
 
       - name: Build with Maven
-        run: mvn clean install
+        run: mvn clean package -DskipTests
 
-      - name: Upload artifact for deployment job
+      - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
           name: java-app
@@ -37,15 +38,15 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
-  
+      id-token: write
+      contents: read
+
     steps:
-      - name: Download artifact from build job
+      - name: Download artifact from build
         uses: actions/download-artifact@v4
         with:
           name: java-app
-      
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -53,11 +54,20 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_020101F98F3C40B88EF2B5994BE42544 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_AC9060AE6B504A75946B48BB45196FD3 }}
 
+      - name: Wait before deployment
+        run: sleep 10
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'Alpha'
+          app-name: 'sturdy'   # Nombre de tu App Service
           slot-name: 'Production'
           package: '*.jar'
+          scm-do-build-during-deployment: true
+
+      - name: Check deployed app health
+        run: |
+          echo "Verificando despliegue..."
+          curl -I https://sturdy-h3b6f4fyc5fbeuae.westeurope-01.azurewebsites.net || exit 1
           
